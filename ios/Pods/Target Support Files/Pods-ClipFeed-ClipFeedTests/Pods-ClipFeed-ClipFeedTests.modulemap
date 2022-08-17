@@ -1,0 +1,6 @@
+module Pods_ClipFeed_ClipFeedTests {
+  umbrella header "Pods-ClipFeed-ClipFeedTests-umbrella.h"
+
+  export *
+  module * { export * }
+}
