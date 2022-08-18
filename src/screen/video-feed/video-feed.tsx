@@ -72,7 +72,6 @@ export default function VideoFeed() {
       });
 
       const newData = [...videoData, ...data?.data?.data];
-      console.log('new', newData);
 
       setVideoData(newData);
       setShowLoadingIndicator(false);
@@ -189,7 +188,6 @@ export default function VideoFeed() {
       setVideoData(newData);
     };
     const onClickAddToCart = () => {
-      console.log('item', item);
       const newData = videoData.map((itemList: any, indexList) => {
         if (item.id === itemList.id) {
           return {
