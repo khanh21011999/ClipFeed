@@ -1,7 +1,7 @@
 /* eslint-disable react-native/no-inline-styles */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import axios from 'axios';
-import React, {useState, useEffect, useRef} from 'react';
+import React, {useState, useEffect, useRef, useCallback, useMemo} from 'react';
 import {
   ViewProps,
   TextProps,
@@ -20,43 +20,32 @@ import {
   NativeScrollEvent,
   ActivityIndicator,
 } from 'react-native';
-import {apiUrl} from '../../constant/string';
+import {apiUrl, mockNav} from '../../constant/string';
 
 import Video from 'react-native-video';
 import {height, width} from '../../theme/size';
-import VideoFeedItem from './video-feed-item';
+import IoniIcon from 'react-native-vector-icons/Ionicons';
+import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
+import {RFPercentage, RFValue} from 'react-native-responsive-fontsize';
+import {makeMutable} from 'react-native-reanimated';
+import ProductItemBottom from './product-item-bottom';
+import BottomSheet from '@gorhom/bottom-sheet';
+import PopUpSheet from './pop-up-sheet';
+
 const CONTAINER: ViewStyle = {
   flex: 1,
   //   minHeight: height,
   //   width: width,
 };
 
-const DATA = [
-  {
-    id: 'bd7acbea-c1b1-46c2-aed5-3ad53abb28ba',
-    title: 'First Item',
-    bg: 'green',
-  },
-  {
-    id: '3ac68afc-c605-48d3-a4f8-fbd91aa97f63',
-    title: 'Second Item',
-    bg: 'red',
-  },
-  {
-    id: '58694a0f-3da1-471f-bd96-145571e29d72',
-    title: 'Third Item',
-    bg: 'blue',
-  },
-];
-
 export default function VideoFeed() {
   const [videoData, setVideoData] = useState<any>([]);
   const [pause, setPause] = useState(true);
   const [focusedIndex, setFocusedIndex] = React.useState<any>(0);
-  const videoRef = useRef();
   const [currentPage, setCurrentPage] = useState(1);
   const [perPage, setPerPage] = useState(10);
   const [showLoadingIndicator, setShowLoadingIndicator] = useState<any>(false);
+  const [showModal, setShowModal] = useState(false);
   const handleLoadMore = () => {
     setShowLoadingIndicator(true);
     getVideoData(currentPage + 1, perPage).then(() => {
@@ -68,10 +57,18 @@ export default function VideoFeed() {
     getVideoData(currentPage, perPage);
   }, []);
 
+  const setShowModalFunc = value => {
+    setShowModal(value);
+  };
   const getVideoData = async (currPage, perP) => {
     axios.get(apiUrl(currPage, perP)).then((data: any) => {
-      data?.data?.data.forEach((item: any, index: any) => {
+      data?.data?.data.forEach((item: any) => {
         item.isPause = true;
+        item.isLike = false;
+        item.totalLike = 0;
+        item.isMute = false;
+        item.talent.isAddedToCart = false;
+        item.randomId = Math.floor(Math.random() * 100000 + 1);
       });
 
       const newData = [...videoData, ...data?.data?.data];
@@ -100,12 +97,118 @@ export default function VideoFeed() {
         return true;
       }
     };
+    const renderIconItem = (
+      iconName,
+      onPress,
+      itemColor,
+      value?,
+      renderMute = false,
+      muteColor?,
+    ) => {
+      return (
+        <View style={styles.renderIconContainer}>
+          <TouchableOpacity
+            onPress={() => {
+              onPress();
+            }}
+            style={styles.renderIconWrapper}>
+            <View style={styles.opacityIconWrapper} />
+            {renderMute ? (
+              <FontAwesome5
+                name={'volume-mute'}
+                size={RFValue(20)}
+                color={muteColor}
+              />
+            ) : (
+              <IoniIcon name={iconName} size={RFValue(28)} color={itemColor} />
+            )}
+          </TouchableOpacity>
+          {!renderMute && (
+            <Text style={{fontSize: RFValue(16), color: 'white'}}>
+              {value ? value : 0}
+            </Text>
+          )}
+        </View>
+      );
+    };
+    const renderAvatar = avatarUrl => {
+      return (
+        <TouchableOpacity
+          onPress={() => {
+            // onPress();
+          }}
+          style={styles.renderAvatarWrapper}>
+          <Image
+            source={{uri: avatarUrl}}
+            resizeMode="center"
+            style={styles.avatarImg}
+          />
+        </TouchableOpacity>
+      );
+    };
 
+    const onClickLike = () => {
+      const newData = videoData.map((itemList: any) => {
+        if (itemList?.id === item.id) {
+          return {
+            ...itemList,
+            isLike: !itemList.isLike,
+            totalLike: itemList.isLike
+              ? itemList.totalLike - 1
+              : itemList.totalLike + 1,
+          };
+        }
+        return itemList;
+      });
+
+      setVideoData(newData);
+    };
+    const renderAddedToCart = () => {
+      return (
+        <View style={styles.addToCartWrapper}>
+          <IoniIcon
+            name="checkmark-circle-sharp"
+            color="#84CA41"
+            size={RFValue(24)}
+          />
+          <Text style={styles.addToCartText}>ADDED TO CART</Text>
+        </View>
+      );
+    };
+    const onClickMute = () => {
+      const newData = videoData.map((itemList: any) => {
+        if (itemList?.id === item.id) {
+          return {
+            ...itemList,
+            isMute: !itemList?.isMute,
+          };
+        }
+        return itemList;
+      });
+
+      setVideoData(newData);
+    };
+    const onClickAddToCart = () => {
+      console.log('item', item);
+      const newData = videoData.map((itemList: any, indexList) => {
+        if (item.id === itemList.id) {
+          return {
+            ...itemList,
+            talent: {
+              isAddedToCart: true,
+            },
+          };
+        }
+        return itemList;
+      });
+
+      setVideoData(newData);
+    };
     return (
       <TouchableWithoutFeedback
         onPress={() => {
-          const newData = videoData.map((itemList: any, indexList) => {
-            if (itemList?.order_id === item.order_id) {
+          const newData = videoData.map((itemList: any) => {
+            if (itemList?.id === item.id) {
               return {
                 ...itemList,
                 isPause: !itemList.isPause,
@@ -113,7 +216,7 @@ export default function VideoFeed() {
             }
             return itemList;
           });
-          console.log('new data', newData);
+
           setVideoData(newData);
         }}>
         <View
@@ -121,25 +224,54 @@ export default function VideoFeed() {
             height: height,
             width: width,
           }}>
+          <PopUpSheet
+            addToCart={onClickAddToCart}
+            data={item?.talent}
+            isVisible={showModal}
+            setVisible={() => {
+              setShowModalFunc(false);
+            }}
+          />
           <Video
             // controls
-
+            poster={item?.thumbnail}
             paused={setPauseValue()}
             repeat
             resizeMode="cover"
             source={{uri: item?.url}}
-            style={{
-              //   position: 'absolute',
-              // top: 0,
-              // left: 0,
-              // bottom: 0,
-              // right: 0,
-              position: 'absolute',
-              height: '100%',
-              width: '100%',
-            }}
+            style={styles.videoContainer}
           />
-          <Text>asdsadasd</Text>
+          <View style={styles.rightMenu}>
+            {renderIconItem(
+              'heart',
+              onClickLike,
+              item?.isLike ? 'red' : 'white',
+              item?.totalLike,
+            )}
+            {renderIconItem('chatbubble-ellipses-outline', () => {}, 'white')}
+            {renderAvatar(item?.thumbnail)}
+            {renderIconItem(
+              '',
+              onClickMute,
+              'white',
+              '',
+              true,
+              item?.isMute ? 'red' : 'white',
+            )}
+          </View>
+          <View style={styles.productIemContainer}>
+            {item?.talent?.isAddedToCart ? (
+              <View>{renderAddedToCart()}</View>
+            ) : (
+              <ProductItemBottom
+                onPressAddedToCart={onClickAddToCart}
+                item={item?.talent}
+                onPress={() => {
+                  setShowModalFunc(true);
+                }}
+              />
+            )}
+          </View>
         </View>
       </TouchableWithoutFeedback>
     );
@@ -171,7 +303,7 @@ export default function VideoFeed() {
         }}
         scrollEventThrottle={height}
         showsVerticalScrollIndicator={false}
-        // snapToInterval={width + 10}
+        // snapToInterval={width * 0.1}
         // snapToInterval={} // Adjust to your content width decelerationRate={"fast"} pagingEnabled
         renderItem={renderItem}
         getItemLayout={getItemLayout}
@@ -191,12 +323,90 @@ export default function VideoFeed() {
         data={videoData}
       />
       {showLoadingIndicator && (
-        <View
-          style={{height: 30, alignItems: 'center', justifyContent: 'center'}}>
+        <View style={styles.indicator}>
           <ActivityIndicator color={'green'} />
         </View>
       )}
     </View>
   );
 }
-const styles = StyleSheet.create({});
+const styles = StyleSheet.create({
+  renderIconContainer: {
+    marginBottom: RFValue(16),
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  renderIconWrapper: {
+    height: RFValue(48),
+    marginBottom: RFValue(4),
+    width: RFValue(48),
+
+    // backgroundColor: 'black',
+    // opacity: 0.3,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: RFValue(32),
+  },
+  opacityIconWrapper: {
+    position: 'absolute',
+    // height: '100%',
+    // width: '100%',
+    opacity: 0.6,
+
+    backgroundColor: 'black',
+    // opacity: 0.3,
+    borderRadius: RFValue(32),
+    height: RFValue(48),
+    width: RFValue(48),
+  },
+  renderAvatarWrapper: {
+    height: RFValue(48),
+    width: RFValue(48),
+    marginBottom: RFValue(16),
+    borderWidth: 3,
+    borderColor: 'white',
+    // backgroundColor: 'black',
+    // opacity: 0.3,
+    justifyContent: 'center',
+
+    alignItems: 'center',
+    borderRadius: RFValue(32),
+  },
+  avatarImg: {
+    height: '95%',
+    width: '95%',
+    borderRadius: RFValue(32),
+  },
+  addToCartWrapper: {
+    height: 0.08 * height,
+    width: width * 0.9,
+    // paddingBottom: height * 0.1,
+    backgroundColor: 'white',
+    flexDirection: 'row',
+    alignItems: 'center',
+    padding: RFValue(16),
+    borderRadius: RFValue(16),
+    // justifyContent: 'center',
+  },
+  addToCartText: {
+    fontWeight: 'bold',
+    fontSize: RFValue(12),
+    paddingLeft: RFValue(16),
+  },
+  videoContainer: {
+    position: 'absolute',
+    height: '100%',
+    width: '100%',
+  },
+  productIemContainer: {
+    position: 'absolute',
+    alignSelf: 'center',
+    bottom: height * 0.1,
+  },
+  rightMenu: {
+    position: 'absolute',
+    right: width * 0.05,
+    top: height * 0.2,
+  },
+  indicator: {height: 30, alignItems: 'center', justifyContent: 'center'},
+});
