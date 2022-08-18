@@ -11,7 +11,7 @@ import {
 } from 'react-native';
 import Modal from 'react-native-modal';
 import Swiper from 'react-native-swiper';
-import {mockItem} from '../../constant/string';
+import {colors, mockItem} from '../../constant/string';
 import {height, width} from '../../theme/size';
 import Ionicon from 'react-native-vector-icons/Ionicons';
 import AntDesign from 'react-native-vector-icons/AntDesign';
@@ -83,7 +83,11 @@ export default function PopUpSheet({isVisible, setVisible, data, addToCart}) {
             </View>
             <View style={styles.ratingContainer}>
               <View style={styles.ratingWrapper}>
-                <AntDesign name="star" size={RFValue(16)} color="#F76723" />
+                <AntDesign
+                  name="star"
+                  size={RFValue(16)}
+                  color={colors.starYellow}
+                />
                 <Text style={styles.ratingText}>4.9</Text>
               </View>
               <Text style={styles.totalRatingText}>33 reviews</Text>
@@ -169,7 +173,7 @@ const styles = StyleSheet.create({
     alignSelf: 'flex-end',
   },
   exclusive: {
-    backgroundColor: '#F80C77',
+    backgroundColor: colors.primary,
     alignSelf: 'flex-end',
     padding: RFValue(2),
     width: 0.2 * width,
@@ -196,7 +200,7 @@ const styles = StyleSheet.create({
   realCode: {
     fontSize: RFValue(18),
     fontWeight: 'bold',
-    color: '#F80C77',
+    color: colors.primary,
   },
   line: {
     height: RFValue(2),
@@ -273,7 +277,7 @@ const styles = StyleSheet.create({
   },
   addToCartContainer: {
     height: '40%',
-    backgroundColor: '#F80C77',
+    backgroundColor: colors.primary,
     flex: 6,
     borderRadius: RFValue(6),
     alignItems: 'center',

@@ -20,7 +20,7 @@ import {
   NativeScrollEvent,
   ActivityIndicator,
 } from 'react-native';
-import {apiUrl, mockNav} from '../../constant/string';
+import {apiUrl, colors, mockNav} from '../../constant/string';
 
 import Video from 'react-native-video';
 import {height, width} from '../../theme/size';
@@ -168,7 +168,7 @@ export default function VideoFeed() {
         <View style={styles.addToCartWrapper}>
           <IoniIcon
             name="checkmark-circle-sharp"
-            color="#84CA41"
+            color={colors.green}
             size={RFValue(24)}
           />
           <Text style={styles.addToCartText}>ADDED TO CART</Text>

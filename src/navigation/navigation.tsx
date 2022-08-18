@@ -15,6 +15,7 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import {RFValue} from 'react-native-responsive-fontsize';
 import Octicon from 'react-native-vector-icons/Octicons';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
+import {colors} from '../constant/string';
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
 const BottomTab = () => {
@@ -36,12 +37,12 @@ const BottomTab = () => {
                   <Ionicons
                     name="compass-outline"
                     size={RFValue(24)}
-                    color="#F80C77"
+                    color={colors.primary}
                   />
                   <Text
                     style={{
                       fontSize: RFValue(10),
-                      color: '#F80C77',
+                      color: colors.primary,
                       fontWeight: '600',
                     }}>
                     Discover
@@ -67,8 +68,12 @@ const BottomTab = () => {
             if (focused) {
               return (
                 <View style={{alignItems: 'center', justifyContent: 'center'}}>
-                  <Ionicons name="star" size={RFValue(24)} color="#F80C77" />
-                  <Text style={{fontSize: RFValue(10), color: '#F80C77'}}>
+                  <Ionicons
+                    name="star"
+                    size={RFValue(24)}
+                    color={colors.primary}
+                  />
+                  <Text style={{fontSize: RFValue(10), color: colors.primary}}>
                     Star
                   </Text>
                 </View>
@@ -91,9 +96,9 @@ const BottomTab = () => {
                   <Octicon
                     name="diff-added"
                     size={RFValue(24)}
-                    color="#F80C77"
+                    color={colors.primary}
                   />
-                  <Text style={{fontSize: RFValue(10), color: '#F80C77'}}>
+                  <Text style={{fontSize: RFValue(10), color: colors.primary}}>
                     Add
                   </Text>
                 </View>
@@ -116,9 +121,9 @@ const BottomTab = () => {
                   <Ionicons
                     name="cart-outline"
                     size={RFValue(24)}
-                    color="#F80C77"
+                    color={colors.primary}
                   />
-                  <Text style={{fontSize: RFValue(10), color: '#F80C77'}}>
+                  <Text style={{fontSize: RFValue(10), color: colors.primary}}>
                     Cart
                   </Text>
                 </View>
@@ -142,8 +147,12 @@ const BottomTab = () => {
             if (focused) {
               return (
                 <View style={{alignItems: 'center', justifyContent: 'center'}}>
-                  <FontAwesome name="user" size={RFValue(24)} color="#F80C77" />
-                  <Text style={{fontSize: RFValue(10), color: '#F80C77'}}>
+                  <FontAwesome
+                    name="user"
+                    size={RFValue(24)}
+                    color={colors.primary}
+                  />
+                  <Text style={{fontSize: RFValue(10), color: colors.primary}}>
                     Profile
                   </Text>
                 </View>

@@ -41,3 +41,8 @@ export const mockNav = [
     iconName: 'user',
   },
 ];
+export const colors = {
+  primary: '#F80C77',
+  starYellow: '#F76723',
+  green: '#84CA41',
+};
