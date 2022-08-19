@@ -1,6 +1,6 @@
 # ClipFeed
  
- Application for testing video feed 📹
+ Application for testing
 
 
  
@@ -23,3 +23,8 @@ To run the app, run `yarn install` and `cd ios && pod install && cd ..` , after 
  - [x] Save to card when press pop up item  
  - [x] Fullscreen loading when load more
  - [x] Loading indicator when load product image
+## Todo
+- [] More optimize the video
+- [] Make loading indicator for unload video
+- [] Optimize UI to scaleble
+- [] Native module to max performance boost 🚀
