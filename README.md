@@ -20,4 +20,6 @@ To run the app, run `yarn install` and `cd ios && pod install && cd ..` , after 
  - [x] Add like when press
  - [x] Bottom pop up
  - [x] Save to cart
- - [ ] Save to card when press pop up item  
+ - [x] Save to card when press pop up item  
+ - [x] Fullscreen loading when load more
+ - [x] Loading indicator when load product image
