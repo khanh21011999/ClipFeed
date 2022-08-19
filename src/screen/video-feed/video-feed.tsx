@@ -98,16 +98,9 @@ export default function VideoFeed() {
       }
       return itemList;
     });
-    // Alert.alert(
-    //   'Some how if you click on pop up, it will load on item place in number ' +
-    //     index +
-    //     ', it a buggg',
-    // );
-
     setVideoData(newData);
   };
   const renderItem = ({item, index}: {item: any; index: any}) => {
-    // console.log('index', index);
     const setPauseValue = () => {
       if (index === focusedIndex && item?.isPause === true) {
         return false;
@@ -169,8 +162,8 @@ export default function VideoFeed() {
     };
 
     const onClickLike = () => {
-      const newData = videoData.map((itemList: any) => {
-        if (itemList?.id === item.id) {
+      const newData = videoData.map((itemList, itemListIndex) => {
+        if (index === itemListIndex) {
           return {
             ...itemList,
             isLike: !itemList.isLike,
@@ -197,8 +190,8 @@ export default function VideoFeed() {
       );
     };
     const onClickMute = () => {
-      const newData = videoData.map((itemList: any) => {
-        if (itemList?.id === item.id) {
+      const newData = videoData.map((itemList, itemListIndex) => {
+        if (index === itemListIndex) {
           return {
             ...itemList,
             isMute: !itemList?.isMute,
@@ -229,20 +222,8 @@ export default function VideoFeed() {
             height: height,
             width: width,
           }}>
-          {/* <PopUpSheet
-            addToCart={() => {
-              // onClickAddToCart();
-            }}
-            data={item?.talent}
-            anotherData={item}
-            isVisible={showModal}
-            setVisible={() => {
-              setShowModalFunc(false);
-            }}
-          /> */}
           <Video
             // controls
-
             poster={item?.thumbnail}
             paused={setPauseValue()}
             repeat
@@ -290,7 +271,6 @@ export default function VideoFeed() {
     );
   };
   const isCloseToBottom = ({layoutMeasurement, contentOffset, contentSize}) => {
-    // const paddingToBottom = 20;
     return layoutMeasurement.height + contentOffset.y >= contentSize.height;
   };
   const getItemLayout = (data, index) => ({
@@ -322,8 +302,6 @@ export default function VideoFeed() {
         }}
         scrollEventThrottle={height}
         showsVerticalScrollIndicator={false}
-        // snapToInterval={width * 0.1}
-        // snapToInterval={} // Adjust to your content width decelerationRate={"fast"} pagingEnabled
         renderItem={renderItem}
         getItemLayout={getItemLayout}
         // removeClippedSubview
@@ -333,12 +311,6 @@ export default function VideoFeed() {
         maxToRenderPerBatch={10}
         windowSize={10}
         keyExtractor={(item, index: any) => index.toString()}
-        // style={{flex: 1}}
-        // contentContainerStyle={{
-        //   minHeight: '100%',
-        //   //   flex: 1,
-        //   width: '100%',
-        // }}
         data={videoData}
       />
       {showLoadingIndicator && (
