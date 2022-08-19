@@ -19,6 +19,7 @@ import {
   NativeSyntheticEvent,
   NativeScrollEvent,
   ActivityIndicator,
+  Alert,
 } from 'react-native';
 import {apiUrl, colors, mockNav} from '../../constant/string';
 
@@ -46,17 +47,16 @@ export default function VideoFeed() {
   const [perPage, setPerPage] = useState(10);
   const [showLoadingIndicator, setShowLoadingIndicator] = useState<any>(false);
   const [showModal, setShowModal] = useState(false);
+  const [modalData, setModalData] = useState(null);
+  const [currentIndex, setCurrentIndex] = useState(0);
   const handleLoadMore = () => {
     setShowLoadingIndicator(true);
-    getVideoData(currentPage + 1, perPage).then(() => {
-      setCurrentPage(currentPage + 1);
-    });
+    getVideoData(currentPage + 1, perPage);
   };
 
   useEffect(() => {
     getVideoData(currentPage, perPage);
   }, []);
-
   const setShowModalFunc = value => {
     setShowModal(value);
   };
@@ -68,13 +68,12 @@ export default function VideoFeed() {
         item.totalLike = 0;
         item.isMute = false;
         item.talent.isAddedToCart = false;
-        item.randomId = Math.floor(Math.random() * 100000 + 1);
+        // item.randomId = Math.floor(Math.random() * 100000 + 1);
       });
-
       const newData = [...videoData, ...data?.data?.data];
-
       setVideoData(newData);
       setShowLoadingIndicator(false);
+      setCurrentPage(currentPage + 1);
     });
   };
   const handleScroll = React.useCallback(
@@ -85,6 +84,28 @@ export default function VideoFeed() {
     [setFocusedIndex],
   );
   // if pause && focus ==> focus , if not pause
+
+  const onClickAddToCart = index => {
+    // console.log('item', item);
+    const newData = videoData.map((itemList: any, indexList) => {
+      if (index === indexList) {
+        return {
+          ...itemList,
+          talent: {
+            isAddedToCart: true,
+          },
+        };
+      }
+      return itemList;
+    });
+    // Alert.alert(
+    //   'Some how if you click on pop up, it will load on item place in number ' +
+    //     index +
+    //     ', it a buggg',
+    // );
+
+    setVideoData(newData);
+  };
   const renderItem = ({item, index}: {item: any; index: any}) => {
     // console.log('index', index);
     const setPauseValue = () => {
@@ -96,6 +117,7 @@ export default function VideoFeed() {
         return true;
       }
     };
+
     const renderIconItem = (
       iconName,
       onPress,
@@ -184,24 +206,9 @@ export default function VideoFeed() {
         }
         return itemList;
       });
-
       setVideoData(newData);
     };
-    const onClickAddToCart = () => {
-      const newData = videoData.map((itemList: any, indexList) => {
-        if (item.id === itemList.id) {
-          return {
-            ...itemList,
-            talent: {
-              isAddedToCart: true,
-            },
-          };
-        }
-        return itemList;
-      });
 
-      setVideoData(newData);
-    };
     return (
       <TouchableWithoutFeedback
         onPress={() => {
@@ -222,16 +229,20 @@ export default function VideoFeed() {
             height: height,
             width: width,
           }}>
-          <PopUpSheet
-            addToCart={onClickAddToCart}
+          {/* <PopUpSheet
+            addToCart={() => {
+              // onClickAddToCart();
+            }}
             data={item?.talent}
+            anotherData={item}
             isVisible={showModal}
             setVisible={() => {
               setShowModalFunc(false);
             }}
-          />
+          /> */}
           <Video
             // controls
+
             poster={item?.thumbnail}
             paused={setPauseValue()}
             repeat
@@ -262,10 +273,14 @@ export default function VideoFeed() {
               <View>{renderAddedToCart()}</View>
             ) : (
               <ProductItemBottom
-                onPressAddedToCart={onClickAddToCart}
+                onPressAddedToCart={() => {
+                  onClickAddToCart(index);
+                }}
                 item={item?.talent}
                 onPress={() => {
+                  setModalData(item?.talent);
                   setShowModalFunc(true);
+                  setCurrentIndex(index);
                 }}
               />
             )}
@@ -275,11 +290,8 @@ export default function VideoFeed() {
     );
   };
   const isCloseToBottom = ({layoutMeasurement, contentOffset, contentSize}) => {
-    const paddingToBottom = 20;
-    return (
-      layoutMeasurement.height + contentOffset.y >=
-      contentSize.height - paddingToBottom
-    );
+    // const paddingToBottom = 20;
+    return layoutMeasurement.height + contentOffset.y >= contentSize.height;
   };
   const getItemLayout = (data, index) => ({
     length: height,
@@ -288,6 +300,16 @@ export default function VideoFeed() {
   });
   return (
     <View style={CONTAINER}>
+      <PopUpSheet
+        data={modalData}
+        isVisible={showModal}
+        setVisible={() => {
+          setShowModalFunc(false);
+        }}
+        addToCart={() => {
+          onClickAddToCart(currentIndex);
+        }}
+      />
       <FlatList
         snapToAlignment={'start'}
         pagingEnabled
@@ -295,14 +317,13 @@ export default function VideoFeed() {
         onScroll={({nativeEvent}: {nativeEvent: any}) => {
           handleScroll({nativeEvent});
           if (isCloseToBottom(nativeEvent)) {
-            // enableSomeButton();
             handleLoadMore();
           }
         }}
         scrollEventThrottle={height}
         showsVerticalScrollIndicator={false}
         // snapToInterval={width * 0.1}
-
+        // snapToInterval={} // Adjust to your content width decelerationRate={"fast"} pagingEnabled
         renderItem={renderItem}
         getItemLayout={getItemLayout}
         // removeClippedSubview
@@ -406,5 +427,13 @@ const styles = StyleSheet.create({
     right: width * 0.05,
     top: height * 0.2,
   },
-  indicator: {height: 30, alignItems: 'center', justifyContent: 'center'},
+  indicator: {
+    height: height,
+    width: width,
+    position: 'absolute',
+    alignItems: 'center',
+    // backgroundColor: 'transparent',
+
+    justifyContent: 'center',
+  },
 });

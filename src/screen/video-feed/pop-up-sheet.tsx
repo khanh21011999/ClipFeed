@@ -1,6 +1,14 @@
 /* eslint-disable react-native/no-inline-styles */
-import React from 'react';
-import {View, Text, TouchableOpacity, StyleSheet, Image} from 'react-native';
+import React, {useState} from 'react';
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  StyleSheet,
+  ActivityIndicator,
+  Image,
+} from 'react-native';
+import ImageProgress from 'react-native-image-progress';
 import Modal from 'react-native-modal';
 import Swiper from 'react-native-swiper';
 import {colors, mockItem} from '../../constant/string';
@@ -30,8 +38,11 @@ export default function PopUpSheet({isVisible, setVisible, data, addToCart}) {
             activeDot={<View style={styles.swipeDotActive} />}>
             {mockItem.map((item, index) => (
               <View key={index} style={{flex: 1, alignItems: 'center'}}>
-                <Image
+                <ImageProgress
                   source={{uri: item.img}}
+                  // loadingIndicatorSource={{uri: item.img}}
+                  indicator={<ActivityIndicator size={24} color={'green'} />}
+                  // source={}
                   resizeMode="cover"
                   style={styles.imageSwiperContainer}
                 />
@@ -56,9 +67,11 @@ export default function PopUpSheet({isVisible, setVisible, data, addToCart}) {
                 <View
                   style={{
                     // alignItems: 'center',
+
                     justifyContent: 'center',
                   }}>
                   <Image
+                    // indicator={<ActivityIndicator size={24} color={'green'} />}
                     source={{uri: data?.avatar_url}}
                     resizeMode={'cover'}
                     style={styles.avatarImg}
@@ -66,7 +79,7 @@ export default function PopUpSheet({isVisible, setVisible, data, addToCart}) {
                 </View>
                 <View style={styles.avatarNameContainer}>
                   <Text style={styles.detailAvatarContainer}>
-                    {data.name_en}
+                    {data?.name_en}
                   </Text>
                   <Text>Actor ► Egypt</Text>
                 </View>
@@ -87,7 +100,7 @@ export default function PopUpSheet({isVisible, setVisible, data, addToCart}) {
           </View>
           <View>
             <Text style={styles.descritionHeader}>Description</Text>
-            <Text numberOfLines={4}>{data.bio_en}</Text>
+            <Text numberOfLines={4}>{data?.bio_en}</Text>
             <Text style={styles.seeMore}>See more</Text>
           </View>
         </View>
@@ -213,7 +226,6 @@ const styles = StyleSheet.create({
     // flex: 1,
     height: RFValue(48),
     width: RFValue(48),
-
     borderRadius: RFValue(24),
   },
   avatarNameContainer: {justifyContent: 'center', marginLeft: RFValue(16)},
