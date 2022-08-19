@@ -15,7 +15,7 @@ To run the app, run `yarn install` and `cd ios && pod install && cd ..` , after 
  - [x] Pause on click
  - [x] Paging (10 per page)
  - [x] Flatlist optimization
- - [x] Video feed ( like tiktok )
+ - [x] Video feed 
  - [x] Left side menu
  - [x] Add like when press
  - [x] Bottom pop up
