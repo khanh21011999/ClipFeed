@@ -1,6 +1,6 @@
 # ClipFeed
  
- Application for testing
+ Application for testing video feed 📹
 
 
  
