@@ -24,7 +24,7 @@ To run the app, run `yarn install` and `cd ios && pod install && cd ..` , after 
  - [x] Fullscreen loading when load more
  - [x] Loading indicator when load product image
 ## Todo
-- [] More optimize the video
-- [] Make loading indicator for unload video
-- [] Optimize UI to scaleble
-- [] Native module to max performance boost 🚀
+- [ ] More optimize the video
+- [ ] Make loading indicator for unload video
+- [ ] Optimize UI to scaleble
+- [ ] Native module to max performance boost 🚀
