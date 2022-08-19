@@ -1,14 +1,6 @@
 /* eslint-disable react-native/no-inline-styles */
 import React from 'react';
-import {
-  ViewProps,
-  TextProps,
-  View,
-  Text,
-  TouchableOpacity,
-  StyleSheet,
-  Image,
-} from 'react-native';
+import {View, Text, TouchableOpacity, StyleSheet, Image} from 'react-native';
 import Modal from 'react-native-modal';
 import Swiper from 'react-native-swiper';
 import {colors, mockItem} from '../../constant/string';

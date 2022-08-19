@@ -1,16 +1,7 @@
 /* eslint-disable react-native/no-inline-styles */
 import React from 'react';
-import {
-  ViewProps,
-  TextProps,
-  View,
-  Text,
-  TouchableOpacity,
-  StyleSheet,
-  Image,
-} from 'react-native';
+import {View, Text, TouchableOpacity, StyleSheet, Image} from 'react-native';
 import {RFValue} from 'react-native-responsive-fontsize';
-import {mockItemStoreUrl} from '../../constant/string';
 import {width} from '../../theme/size';
 import {height} from '../../theme/size';
 export default function ProductItemBottom({onPress, item, onPressAddedToCart}) {

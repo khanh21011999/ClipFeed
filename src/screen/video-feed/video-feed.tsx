@@ -302,7 +302,7 @@ export default function VideoFeed() {
         scrollEventThrottle={height}
         showsVerticalScrollIndicator={false}
         // snapToInterval={width * 0.1}
-        // snapToInterval={} // Adjust to your content width decelerationRate={"fast"} pagingEnabled
+
         renderItem={renderItem}
         getItemLayout={getItemLayout}
         // removeClippedSubview
