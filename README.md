@@ -7,7 +7,7 @@
 ## Setup
 
 
-To run the app, run `yarn install` and `cd ios && pod install && cd ..` , after run `npx react-native run ios`
+To run the app, run `yarn install` and `cd ios && pod install && cd ..` , after run `npx react-native run ios` or `npx react-native run android`
 
 ## Requirement feature 
 
